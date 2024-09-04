@@ -1,9 +1,18 @@
 
 # Study Note
 
+## SEP 5
+
+#### React core concept
+  
+Components, JSX, Props, State
+React Apps are built by Combining Components
+
+* Components : Reusable building block, Related code lives together,Separation of concerns
+
 ## SEP 4, 2024
 
-##### 리액트 왜 이용하는가?
+#### 리액트 왜 이용하는가?
 
 리액트는 빌드 프로세스를 사용해 작성한 코드가 변형된다. package.json 파일에서 사용하는 툴을 확인 가능함.
 
