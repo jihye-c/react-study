@@ -15,5 +15,8 @@
     "vite": "^4.3.9"
   },
   "keywords": [],
+  "main": "vite.config.js",
+  "author": "",
+  "license": "ISC",
   "description": ""
 }
