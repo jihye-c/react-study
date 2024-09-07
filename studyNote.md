@@ -1,11 +1,132 @@
-# SEP 7, 2024
+# SEP 8, 2024
+  
+### State
+  
+* State를 왜 쓰는가? 변수가 변경되어도 App 컴포넌트가 실행되지 않아서 UI는 변경되지 않음. UI를 변경하기 위해(App 컴포넌트를 재실행 하기 위해) State를 사용함.
 
+```jsx
+import {useState} from 'react';
+```
+Hooks라고 부르는 useState 함수를 import한다. use로 시작하는 함수들은 다 React hooks.
+컴포넌트 함수 안에 바로 호출해야한다. 다른 코드에 중첩되면 안 된다.
+(inside of Component Functions, on the top level)
+
+Manage State
+
+```jsx
+function App() {
+    const [counter, setCounter] = useState('initial state value');
+}
+```
+
+(useState값을 할당받은) 위의 배열에서 실질적으로 관리되는 데이터는 첫 데이터고,
+두 번째 데이터는 항상 첫 값을 업데이트 하는 특수 함수가 들어온다. - 따라서 이름을 setCounter와 같은 식으로 작명하게 된다.
+  
+### Conditional content rendering
+  
+조건적 콘텐츠 렌더링에는 여러가지 방법이 있다.
+  
+1. null을 포함한 삼항연산자
+```jsx
+    <div>
+        {!condition > <p>Contents A</p> : null}
+        {condition > <p>Contents B</p> : null}
+    </div>
+```
+
+2. 일반 삼항연산자
+```jsx
+    return(
+        <div>
+            {!condition > <p>Contents A</p> : <p>Contents B</p>}
+        </div>
+    )
+```
+
+3. AND 연산자 이용
+```jsx
+    return(
+        <div>
+            {!condition && <p>Contents A</p>}
+            {condition && <p>Contents B</p>}
+        </div>
+    )
+```
+
+4. 변수 사용
+```jsx
+    //return
+    let contents = <p>Contents A</p>;
+    if(condition){
+        contents = <p>Contents B</p>;
+    }
+    return(
+        <div>
+            {contents}
+        </div>
+    )
+```
+  
+### CSS 동적 스타일링
+  
+기존과 동일하게 className이나 id로 css설정.
+isSelected와 같은 변수를 true/false 받아 props로 전달하는 방식.
+```jsx
+function App(){
+    const [selectedTopic, setSelectedTopic] = useState(); //selectedTopic State 생성
+    function handleClick(selectedBtn){//handleClick 이벤트 시 
+        setSelectedTopic(selectedBtn);//selectedTopic의 state를 전달받은 argument로 세팅
+    }
+    function TabButton({children,isSelected}){//탭버튼의 컴포넌트 함수
+        return(
+        <li><button className={isSelected ? 'active' : undefined}>{children}</button></li>
+        )
+    }
+    return(
+        <main>
+            <TabButton isSelected={selectedTopic === 'components'} onSelect={()=>handleClick('components')}>Components</TabButton>
+        <main/>
+    )
+}
+```
+  
+### Dynamic output of lists
+  
+> map 함수란? 
+> map()함수는 배열을 순회하며 콜백 함수를 적용하여 요소를 변환 후, 바뀐 값을 모아 새 배열로 반환한다.
+
+map()을 통해 리스트를 동적으로 만들 수 있다. 
+```jsx
+function PaperItem({ image, number, description }) {
+    return (
+        <li>
+            <img src={image} alt={`${number} image`} />
+            <h3>{number}</h3>
+            <p>{description}</p>
+        </li>
+    )
+}
+<ul>
+    {PAPER.map((paperOption)=> //PAPER 배열 순회
+    <PaperItem
+        key={paperOption.number} //동적 리스트 출력엔 구분지울 수 있는 키 값이 있어야 해서 설정. 추후 자세히 설명
+        {...paperOption}//paperOption의 속성들이 PaperItem 컴포넌트 생성 함수에 props로 전달됨
+    />
+    )} //PAPER 배열의 개수만큼 PaperItem 컴포넌트가 생성됨 
+</ul>
+```
+  
+---
+  
+# SEP 7, 2024
+  
 ### Folder Structures
+  
 * 컴포넌트들은 모두 App.js에 있는 것이 아니라 별도의 `ComponentName.jsx` 파일에 분리하는 것이 일반적이다.
 * CSS 역시 같은 이름으로 분리해서 파일을 가까이에 둘 수 있다. 혹은 ComponentName 폴더로 분리해 그 안에 담아도 된다.
-
+  
 ### Children Props
-
+  
 props.children으로 컴포넌트 사이에 있는 텍스트를 사용할 수 있다.
 ```jsx
 
@@ -63,13 +184,13 @@ function Components(props){
 ```
 * 이벤트로부터 독립적인 함수를 구성 및 설정하고 싶다면 (ex. 식별자 얻기) prop값으로 포인터를 바로 넣지 않고 함수를 다른 함수로 감싼다. 화살표 함수나 익명 함수를 많이 사용한다.
 * 익명함수를 씌우면 코드 라인이 실행될 때 함수만 정의되고 실행되지 않기 때문에 실행을 통제할 수 있다. 괄호를 붙여 파라미터를 전달해도 바로 실행되지 않고 이벤트가 발생할 때에만 실행된다.
-
+  
 ---
-
+  
 # SEP 6, 2024
   
 ### React core concept (2)
-
+  
 * Props : Configuring Components with "props". 데이터를 컴포넌트로 전송하고 사용할 수 있게 함.
 
 1. Components에 Props(custom HTML attributes)를 작성하면
@@ -94,9 +215,9 @@ function Components(props){
         return <h3>{props.title}<h3/>
     }
 ```
-
+  
 ### 구조 분해
-
+  
 객체의 props 명과 데이터의 속성 이름이 비슷할 경우 스프레드 연산자를 이용해 바로 키값을 뽑아낼 수 있다.
 ```JSX
     //before
@@ -134,11 +255,11 @@ function Components(props){
         )
     }
 ```
-
+  
 ---
-
+  
 # SEP 5, 2024
-
+  
 ### React core concept (1)
   
 Components, JSX, Props, State
