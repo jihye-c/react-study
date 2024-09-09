@@ -1,3 +1,87 @@
+# SEP 9, 2024
+
+### JSX를 쓰지 않고 DOM 생성하는 법
+
+* JSX는 비표준 속성이기 때문에 빌드 과정을 거치게 된다. createElement 메소드를 사용해 빌드 과정을 거치지 않고 DOM을 구축할 수 있다.
+  
+```jsx
+<div id="content">
+    <p>Hello World!</p>
+</div>
+```
+위의 DOM은 아래의 코드를 생성한다.
+```javascript
+React.createElement( //createElement 메소드 사용
+    'div', //컴포넌트 타입
+    {id:'content'}, //props 오브젝트
+    React.createElement( //자식 컨텐츠
+        'p',
+        null,
+        'Hello World'
+    )
+)
+```
+  
+같은 원리로 아래의 두 코드는 같은 동작을 한다.
+```jsx
+import ReactDOM from 'react-dom/client';
+import App from './App.jsx'
+const entryPoint = document.getElementById("root");
+ReactDOM.createRoot(entryPoint).render(<App/>);
+```
+```jsx
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App.jsx'
+const entryPoint = document.getElementById("root");
+ReactDOM.createRoot(entryPoint).render(React.createElement(App));
+```
+
+### Fragments (프래그먼트)
+
+```jsx
+    function App(){
+        return(
+            <Header/>
+            <Main/>
+            <Footer/>
+        )
+    }
+    
+```
+return문은 하나의 값만 반환할 수 있기 때문에 목적 없이 그저 감싸기만 하는 태그를 씌우지 않고서는 여러개의 형제 요소를 return 할 수 없다. 이를 위한 대안이 바로 Fragment다.
+  
+```jsx
+import {Fragment} from 'react';
+function App(){
+    return(
+        <Fragment>
+            <Header/>
+            <Main/>
+            <Footer/>
+        </Fragment>
+    )
+}
+```
+구버전 프로젝트에서는 리액트에서 Fragment를 가져와 작성한다. 이렇게 Fragment 컴포넌트로 감싸주면 반환되는 값은 1개이지만 렌더링 된 DOM에서는 불필요한 태그 없이 형제 요소를 만들 수 있다.
+```jsx
+function App(){
+    return(
+        <>
+            <Header/>
+            <Main/>
+            <Footer/>
+        </>
+    )
+}
+```
+보통은 Fragment import 없이 이렇게 빈 태그를 씌우면 된다.
+  
+### 
+상태 관리를 올바른 컴포넌트 안에서 하기 위해 컴포넌트를 쪼개는 것이 중요하다.
+
+---
+  
 # SEP 8, 2024
   
 ### State
