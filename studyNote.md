@@ -1,3 +1,105 @@
+# SEP 10, 2024
+  
+### Props 구조분해 할당을 위한 스프레드 연산자
+```jsx
+<Section id="value"></Section>
+```
+이렇게 적어도 직접 id란 props를 설정해주지 않으면 값이 적용되지 않는다.
+```jsx
+    function Section({id}){
+        return(
+            <section id={id}></section>
+        )
+    }
+```
+이런 식으로 매번 설정해줘야한다.
+  
+```jsx
+<Section id="value"></Section>
+```
+```jsx
+    function Section({value, ...props}){
+        return(
+            <section {...props}></section>
+        )
+    }
+```
+스프레드 연산자를 사용하면 이 구연 컴포넌트에서 사용할 수 있는 props를 모아 props object(속성 개체)로 병합하게 된다. 명시되지 않은 모든 속성들을 빌트인 속성 요소로 가져올 수 있다.
+  
+Parameter 자리에 있는 ...(스프레드 연산자)는 값을 모이기 위함이고 밑에 있는 ...은 값을 펼치기 위함이다.
+
+### JSX Slot Usage
+
+React에선 JSX 코드 역시 Props로 컴포넌트에 넘길 수 있으니 children 속성 대신 임의의 속성을 추가해 JSX 코드를 넘기기 위한 Slot을 남길 수 있다.
+
+```jsx
+<Tabs buttons={
+    <>
+        <TabButton isSelected={selectedTopic === 'components'} onClick={()=>handleClick('components')}>Components</TabButton>
+        <TabButton isSelected={selectedTopic === 'components'} onClick={()=>handleClick('components')}>Components</TabButton>
+    </>
+}>
+    {tabConents}
+</Tabs>
+```
+```jsx
+export default function Tabs({children, buttons}){
+    return <>
+        <menu>
+            {buttons}
+        </menu>
+        {children}
+    </>
+}
+```
+  
+### 컴포넌트 타입 동적 설정하기
+```jsx
+export default function Tabs({children, buttons, buttonsContainer}){
+    //buttonsContainer의 argument로 내장 컴포넌트 이름의 문자열 값이 아닌 변수나 컴포넌트를 {넣게 되면}
+    //그 컴포넌트 함수를 가져오게 된다.
+    const ButtonsContainer = buttonsContainer;
+    return <>
+        <ButtonsContainer>
+            {buttons}
+        </ButtonsContainer>
+        {children}
+    </>
+}
+```
+커스텀 컴포넌트가 아닌 내장 컴포넌트를 이용하고 싶다면 문자열로 props를 보내면 된다.
+단, 컴포넌트 태그 안에는 변수나 빌트인 요소(소문자로 시작하는 식별자)가 들어가지 못하므로
+위 코드처럼 대문자로 시작하는 특수 상수나 변수를 사용해 값을 읽어오도록 하면 된다.
+  
+```jsx
+      <Tabs ButtonsContainer="menu"></Tabs>
+```
+```jsx
+export default function Tabs({children, buttons, ButtonsContainer}){
+    return <>
+        <ButtonsContainer>
+            {buttons}
+        </ButtonsContainer>
+        {children}
+    </>
+}
+```
+컴포넌트 타입을 정할거면 처음부터 이렇게 대문자 상수로 받아와도 동일한 동작을 한다.
+  
+```jsx
+export default function Tabs({children, buttons, ButtonsContainer = 'menu'}){
+    return <>
+        <ButtonsContainer>
+            {buttons}
+        </ButtonsContainer>
+        {children}
+    </>
+}
+```
+등호를 사용해 기본값을 세팅해놓을 수도 있다.
+
+---
+
 # SEP 9, 2024
 
 ### JSX를 쓰지 않고 DOM 생성하는 법
@@ -77,7 +179,7 @@ function App(){
 ```
 보통은 Fragment import 없이 이렇게 빈 태그를 씌우면 된다.
   
-### 
+### Feature 및 State별로 컴포넌트 분리
 상태 관리를 올바른 컴포넌트 안에서 하기 위해 컴포넌트를 쪼개는 것이 중요하다.
 
 ---
